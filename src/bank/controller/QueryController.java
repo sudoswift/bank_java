@@ -9,10 +9,27 @@ import javax.servlet.http.HttpSession;
 
 import bank.service.Service;
 
-public class QueryController {
-
+public class QueryController implements Controller {
+	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
+		String path = null;
+		String job = request.getParameter("job");
+		if(job.equals("q")) {
+			path = "/result/queryResult.jsp";
+		}else if(job.equals("w")) {
+			path = "/withdrawal.jsp";
+		}
+		String id = (String)request.getSession().getAttribute("id");
+		
+		int money = 0;
+		if(id==null) {
+			System.out.println("query: id is not exist");
+		}else {
+			money = Service.getInstance().query(id);
+			request.setAttribute("money", money);
+			HttpUtil.forward(request, response, path);
+		}
 	}
 	
 }
